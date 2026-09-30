@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GarudaMiles - Roster Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="font-sans antialiased flex h-screen overflow-hidden">
+  <video autoplay loop muted playsinline class="video-background">
+    <source src="https://contentsv3.garuda-indonesia.com/magnoliaPublic/dam/jcr:186790f6-3787-41dc-b80a-e6970e6bdeb1/Hero-Video.mp4" type="video/mp4">
+  </video>
+  <div class="video-overlay"></div>
+  <!-- BACKDROP OVERLAY UNTUK SIDEBAR MOBILE -->
+<div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-30 hidden md:hidden transition-opacity"></div>
+<aside id="sidebar-container" class="fixed md:static inset-y-0 left-0 w-64 glass-panel flex flex-col justify-between transition-transform duration-300 z-40 -translate-x-full md:translate-x-0">
+  <div>
+    <div class="p-4 sm:p-5 flex items-center justify-between border-b border-white/10">
+      <div class="flex items-center gap-3 overflow-hidden">
+        <div class="bg-blue-600/80 backdrop-blur text-white p-2 rounded-lg font-bold flex items-center justify-center w-9 h-9 shrink-0 shadow-lg shadow-blue-500/30"><i class="fas fa-chart-bar"></i></div>
+        <span class="text-xl font-bold text-white tracking-wide sidebar-text whitespace-nowrap">SIAPA V.2</span>
+      </div>
+      <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white p-2"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="p-4 text-xs font-semibold text-slate-400 uppercase tracking-wider sidebar-text">Menu</div>
+    <nav class="space-y-1 px-3">
+      <a href="javascript:void(0)" onclick="switchTab('dashboard')" id="nav-dashboard" class="flex items-center px-3 py-2.5 rounded-lg text-sm text-slate-300 sidebar-hover transition" title="Dashboard"><i class="fas fa-th-large w-6 text-center shrink-0"></i><span class="sidebar-text ml-2 whitespace-nowrap">Dashboard</span></a>
+    </nav>
+    <div class="p-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mt-4 sidebar-text">Administration</div>
+    <nav class="space-y-1 px-3">
+      <a href="javascript:void(0)" onclick="switchTab('roster-ori')" id="nav-roster-ori" class="flex items-center px-3 py-2.5 rounded-lg text-sm text-white sidebar-active transition" title="Roster Original"><i class="fas fa-calendar-alt w-6 text-center shrink-0"></i><span class="sidebar-text ml-2 whitespace-nowrap">Roster Original</span></a>
+      <a href="javascript:void(0)" onclick="switchTab('roster-sc')" id="nav-roster-sc" class="flex items-center px-3 py-2.5 rounded-lg text-sm text-slate-300 sidebar-hover transition" title="Roster Schedule Change"><i class="fas fa-calendar-check w-6 text-center shrink-0"></i><span class="sidebar-text ml-2 whitespace-nowrap">Roster Schedule Change</span></a>
+      <a href="javascript:void(0)" onclick="switchTab('tabel-roster')" id="nav-tabel-roster" class="flex items-center px-3 py-2.5 rounded-lg text-sm text-slate-300 sidebar-hover transition" title="Tabel Rekap Roster"><i class="fas fa-table w-6 text-center shrink-0"></i><span class="sidebar-text ml-2 whitespace-nowrap">Tabel Rekap Roster</span></a>
+    </nav>
+  </div>
+  <div class="p-4 text-xs text-slate-400 border-t border-white/10 text-center sidebar-text whitespace-nowrap overflow-hidden">GarudaMiles &copy; 2026</div>
+</aside>
+  <div class="flex-1 flex flex-col overflow-y-auto z-10 w-full">
+    <header class="glass-panel p-3 sm:p-4 flex justify-between items-center px-4 sm:px-8 border-b border-white/10 sticky top-0 z-20">
+      <button onclick="toggleSidebar()" class="text-slate-300 hover:text-white p-2 rounded-lg focus:outline-none hover:bg-white/10 transition"><i class="fas fa-bars"></i></button>
+      <div class="flex items-center space-x-3 sm:space-x-4">
+        <div class="w-8 h-8 rounded-full bg-blue-600/50 border border-blue-400/30 text-white flex items-center justify-center font-bold text-xs shadow-inner" id="user-avatar">SD</div>
+        <span class="text-xs sm:text-sm font-medium text-slate-100 truncate max-w-[140px] sm:max-w-none" id="user-display-name">M. SETYO DWI PUTRA</span>
+      </div>
+    </header>
+    <main class="p-4 sm:p-6 md:p-8 flex-1">
+      <div class="glass-panel filter-panel-container p-4 sm:p-6 rounded-2xl mb-6 relative z-10">
+        <div class="flex justify-between items-center mb-4"><h2 class="text-xs sm:text-sm font-bold text-slate-100 tracking-wide uppercase">Filter Data</h2></div>
+        <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch sm:items-end flex-wrap">
+          <div id="date-picker-wrapper" class="relative w-full sm:w-auto">
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Date</label>
+            <div onclick="toggleDatePicker(event)" class="glass-input rounded-xl px-4 py-2 text-sm cursor-pointer w-full sm:w-[180px] flex justify-between items-center hover:border-blue-400 transition"><span id="selected-date-label"></span><i class="fas fa-calendar text-slate-400"></i></div>
+            <div id="date-picker-popup" class="hidden absolute left-0 top-full mt-2 glass-panel shadow-2xl rounded-2xl p-4 z-[99999] w-full sm:w-72 bg-slate-900/95 backdrop-blur-xl border border-white/10">
+              <div class="flex justify-between items-center mb-4 px-2"><button onclick="changePickerYear(-1)" class="p-1.5 hover:bg-white/10 rounded-lg text-slate-200 transition"><i class="fas fa-chevron-left"></i></button><span id="picker-year-display" class="font-bold text-white text-base"></span><button onclick="changePickerYear(1)" class="p-1.5 hover:bg-white/10 rounded-lg text-slate-200 transition"><i class="fas fa-chevron-right"></i></button></div>
+              <div class="grid grid-cols-3 gap-2" id="months-grid"></div>
+            </div>
+          </div>
+          <div class="w-full sm:w-auto" id="filter-karyawan-container">
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Perner ID / Karyawan</label>
+            <select id="select-employee" onchange="fetchData()" class="glass-input rounded-xl px-3 py-2 text-sm focus:outline-none w-full sm:min-w-[220px]"><option value="" class="bg-slate-900 text-slate-200">Memuat data...</option></select>
+          </div>
+          <div class="w-full sm:w-auto"><button onclick="fetchData()" class="w-full sm:w-auto justify-center bg-blue-600/85 hover:bg-blue-500/90 border border-blue-400/30 text-white px-5 py-2 rounded-xl text-sm transition flex items-center gap-2 shadow-lg shadow-blue-600/20 active:scale-95"><i class="fas fa-sync-alt"></i> Refresh Data</button></div>
+        </div>
+      </div>
+      <div id="loading" class="flex justify-center items-center py-20"><div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-400"></div></div>
+      <div id="content-area" class="hidden"></div>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
